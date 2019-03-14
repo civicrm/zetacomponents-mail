@@ -168,7 +168,11 @@ abstract class ezcMailPartParser
                 break;
 
             case 'text':
-                if ( ezcMailPartParser::$parseTextAttachmentsAsFiles === true )
+                // UNASSESSED: Based on diffing civi's packages with upstream 1.7beta1, this appears
+                // to be a local change, but I haven't found any history for why.
+                if ( (ezcMailPartParser::$parseTextAttachmentsAsFiles === true)                   && 
+                     (preg_match('/\s*filename="?([^;"]*);?/i', $headers['Content-Disposition']) ||
+                      preg_match( '/\s*name="?([^;"]*);?/i'   , $headers['Content-Type'])        )  )
                 {
                     $bodyParser = new ezcMailFileParser( $mainType, $subType, $headers );
                 }

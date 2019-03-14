@@ -1012,7 +1012,9 @@ class ezcMailImapTransport
         {
             // get the sizes of the messages
             $tag = $this->getNextTag();
-            $query = trim( implode( ',', $messageList ) );
+            $mailBatchSize = defined('MAIL_BATCH_SIZE') ? MAIL_BATCH_SIZE : 1000;
+            $truncatedMessageList = array_slice($messageList, 0, $mailBatchSize);
+            $query = trim( implode( ',', $truncatedMessageList ) );
             $this->connection->sendData( "{$tag} FETCH {$query} RFC822.SIZE" );
             $response = $this->getResponse( 'FETCH (' );
             $currentMessage = trim( reset( $messageList ) );
